@@ -1,5 +1,6 @@
 import { Game } from 'Logic/Game';
 import { useEffect, useRef, useState } from 'react';
+import { BOARD_SIZE } from 'Utils/GameUtils';
 import styles from './GameView.module.css';
 
 export default function GameView() {
@@ -29,7 +30,7 @@ export default function GameView() {
 
     return (
         <div className={styles.gameBox}>
-            <canvas className={styles.board} ref={canvasRef} height={1024} width={1024}></canvas>
+            <canvas className={styles.board} ref={canvasRef} height={BOARD_SIZE} width={BOARD_SIZE}></canvas>
             <button onClick={startGame} className={styles.startButton} >Start game</button>
             <button onClick={resetGame} className={styles.resetButton} >Reset game</button>
             <button onClick={pauseGame} className={styles.pauseButton} >Pause game</button>

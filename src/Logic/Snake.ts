@@ -1,3 +1,4 @@
+import { MoveDirection, TILE_SIZE } from "Utils/GameUtils";
 import { Point } from "Utils/Point";
 import { GameItem } from "./GameItem";
 
@@ -8,8 +9,6 @@ const startSnake =
         new Point(7, 3),
         new Point(7, 2),
     ]
-
-const SIZE = 1024 / 20;
 
 export class Snake implements GameItem {
     position: Point[] = startSnake;
@@ -43,6 +42,27 @@ export class Snake implements GameItem {
         this.draw();
     }
 
+    changeMoveDirection(direction: MoveDirection) {
+        switch (direction) {
+            case MoveDirection.Up: {
+                this.moveDirection = new Point(0, -1);
+                break;
+            }
+            case MoveDirection.Down: {
+                this.moveDirection = new Point(0, 1);
+                break;
+            }
+            case MoveDirection.Left: {
+                this.moveDirection = new Point(-1, 0);
+                break;
+            }
+            case MoveDirection.Right: {
+                this.moveDirection = new Point(1, 0);
+                break;
+            }
+        }
+    }
+
     die() {
         this.clearDraw();
         this.position.shift();
@@ -54,19 +74,19 @@ export class Snake implements GameItem {
     }
 
     draw() {
-        this.context.lineWidth = SIZE;
+        this.context.lineWidth = TILE_SIZE;
         this.context.strokeStyle = '#7ec710';
         this.context.lineCap = 'round';
         this.context.beginPath();
         this.position.forEach((point) =>
-            this.context.lineTo((point.y) * SIZE, (point.x + 0.5) * SIZE)
+            this.context.lineTo((point.y) * TILE_SIZE, (point.x + 0.5) * TILE_SIZE)
         );
         this.context.stroke();
     }
 
     clearDraw() {
         this.position.forEach((point) =>
-            this.context.clearRect((point.y - 0.5) * SIZE - 1.5, (point.x) * SIZE - 1.5, SIZE + 3, SIZE + 3)
+            this.context.clearRect((point.y - 0.5) * TILE_SIZE - 1.5, (point.x) * TILE_SIZE - 1.5, TILE_SIZE + 3, TILE_SIZE + 3)
         );
     }
 

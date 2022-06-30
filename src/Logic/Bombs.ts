@@ -1,8 +1,8 @@
+import { TILE_SIZE } from "Utils/GameUtils";
 import { Point } from "Utils/Point";
 import { RandomInt } from "Utils/RandomInt";
 import { GameItem } from "./GameItem";
 
-const SIZE = 1024 / 20;
 export class Bombs implements GameItem {
     positions: Point[] = [];
     context: CanvasRenderingContext2D;
@@ -29,12 +29,12 @@ export class Bombs implements GameItem {
     }
 
     draw() {
-        this.context.lineWidth = SIZE;
+        this.context.lineWidth = TILE_SIZE;
         this.context.strokeStyle = '#3498db'
 
         this.positions.forEach((point) => {
             this.context.beginPath()
-            this.context.arc((point.x + 0.5) * SIZE, (point.y + 0.5) * SIZE, SIZE / 2, 0, 2 * Math.PI)
+            this.context.arc((point.x + 0.5) * TILE_SIZE, (point.y + 0.5) * TILE_SIZE, TILE_SIZE / 2, 0, 2 * Math.PI)
             this.context.fillStyle = '#000000'
             this.context.fill();
             this.context.closePath();
@@ -44,7 +44,7 @@ export class Bombs implements GameItem {
 
     drawNewBomb(point: Point) {
         this.context.beginPath();
-        this.context.arc((point.x + 0.5) * SIZE, (point.y + 0.5) * SIZE, SIZE / 2, 0, 2 * Math.PI);
+        this.context.arc((point.x + 0.5) * TILE_SIZE, (point.y + 0.5) * TILE_SIZE, TILE_SIZE / 2, 0, 2 * Math.PI);
         this.context.fillStyle = '#000000';
         this.context.fill();
         this.context.closePath();
@@ -52,7 +52,7 @@ export class Bombs implements GameItem {
 
     clearDraw() {
         this.positions.forEach((point) => {
-            this.context.clearRect((point.x) * SIZE, (point.y) * SIZE, SIZE, SIZE);
+            this.context.clearRect((point.x) * TILE_SIZE, (point.y) * TILE_SIZE, TILE_SIZE, TILE_SIZE);
         });
     }
 
@@ -73,7 +73,7 @@ export class Bombs implements GameItem {
     reset() {
         this.positions = [];
         this.isNewBombExpected = false;
-            clearInterval(this.timer);
+        clearInterval(this.timer);
         this.timer = undefined;
     }
 

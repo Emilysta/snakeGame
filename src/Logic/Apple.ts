@@ -1,8 +1,7 @@
+import { TILE_SIZE } from "Utils/GameUtils";
 import { Point } from "Utils/Point";
 import { RandomInt } from "Utils/RandomInt";
 import { GameItem } from "./GameItem";
-
-const SIZE = 1024.0 / 20.0;
 
 export class Apple implements GameItem {
     position: Point = new Point(5, 5);
@@ -31,19 +30,19 @@ export class Apple implements GameItem {
     }
 
     draw() {
-        const x = (this.position.x + 0.5) * SIZE;
-        const y = (this.position.y + 0.5) * SIZE;
+        const x = (this.position.x + 0.5) * TILE_SIZE;
+        const y = (this.position.y + 0.5) * TILE_SIZE;
         this.context.beginPath();
-        this.context.arc(x, y, SIZE / 2, 0, 2 * Math.PI);
+        this.context.arc(x, y, TILE_SIZE / 2, 0, 2 * Math.PI);
         this.context.fillStyle = '#d2202e';
         this.context.fill();
         this.context.closePath()
     }
 
     clearDraw() {
-        const x = (this.position.x) * SIZE;
-        const y = (this.position.y) * SIZE;
-        this.context.clearRect(x, y, SIZE, SIZE);
+        const x = (this.position.x) * TILE_SIZE;
+        const y = (this.position.y) * TILE_SIZE;
+        this.context.clearRect(x, y, TILE_SIZE, TILE_SIZE);
     }
 
     start() {
