@@ -16,6 +16,11 @@
     color: #d2202e;
 }
 
+.customButton:disabled{
+    fill: grey;
+    color: grey;
+}
+
 .customButtonContentBox{
     display: flex;
     flex-direction: column;
