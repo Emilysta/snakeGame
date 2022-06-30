@@ -1,11 +1,17 @@
 .gameBox{
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    --size: 512px;
+    --column-size: calc(var(--size)/20);
 }
 
 .board{
-    --size: 524px;
-    --column-size: calc(var(--size)/20);
+    border: 1px solid #3e4042;
+    border-radius: 10px;
     width: var(--size);
     height: var(--size);
     background-color: #242526; 
@@ -13,46 +19,21 @@
     linear-gradient(to right, #3e4042 1px, transparent 1px),
     linear-gradient(to bottom, #3e4042 1px, transparent 1px);
     background-size: var(--column-size) var(--column-size);
+    box-shadow:  0 6px 20px 0 rgb(0 0 0 / 50%);
 }
 
-.startButton{
+.buttonOverlay{
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--size);
+    height: var(--size);
     z-index: 2;
-    background-color: red;
-    color: white;
 }
 
-.startButton:hover{
-    background-color: rgb(255, 50, 50);
+.buttonContent{
+    font-size: 50px;
 }
 
-.startButton:active{
-    background-color: purple;
-}
 
-.resetButton{
-    z-index: 2;
-    background-color: green;
-    color: white;
-}
-
-.resetButton:hover{
-    background-color: greenyellow;
-}
-
-.resetButton:active{
-    background-color: lightgreen;
-}
-
-.pauseButton{
-    z-index: 2;
-    background-color: black;
-    color: white;
-}
-
-.pauseButton:hover{
-    background-color: grey;
-}
-
-.pauseButton:active{
-    background-color: lightgrey;
-}
