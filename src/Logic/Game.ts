@@ -1,3 +1,4 @@
+import { MoveDirection } from "Utils/GameUtils";
 import { Point } from "Utils/Point";
 import { Apple } from "./Apple";
 import { Bombs } from "./Bombs";
@@ -91,6 +92,31 @@ export class Game {
         this.bombs.update();
 
         this.checkColision();
+    }
+
+    reactToUserInput(key: string) {
+        switch (key) {
+            case "ArrowDown": {
+                this.snake.changeMoveDirection(MoveDirection.Down);
+                break;
+            }
+            case "ArrowUp": {
+                this.snake.changeMoveDirection(MoveDirection.Up);
+                break;
+            }
+            case "ArrowLeft": {
+                this.snake.changeMoveDirection(MoveDirection.Left);
+                break;
+            }
+            case "ArrowRight": {
+                this.snake.changeMoveDirection(MoveDirection.Right);
+                break;
+            }
+            case "Escape": {
+                this.pauseGame();
+                break;
+            }
+        }
     }
 
     endGame() {

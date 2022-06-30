@@ -28,8 +28,12 @@ export default function GameView() {
         game?.pauseGame();
     }
 
+    function onBoardKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+        game?.reactToUserInput(e.key);
+    }
+
     return (
-        <div className={styles.gameBox}>
+        <div className={styles.gameBox} onKeyDown={onBoardKeyDown} tabIndex={0}>
             <canvas className={styles.board} ref={canvasRef} height={BOARD_SIZE} width={BOARD_SIZE}></canvas>
             <button onClick={startGame} className={styles.startButton} >Start game</button>
             <button onClick={resetGame} className={styles.resetButton} >Reset game</button>
