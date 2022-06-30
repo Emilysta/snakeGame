@@ -30,6 +30,9 @@
     width: var(--size);
     height: var(--size);
     z-index: 2;
+    border-radius: 10px;
+    border: 1px solid #da535e;
+    background-color: #070707da;
 }
 
 .buttonContent{
