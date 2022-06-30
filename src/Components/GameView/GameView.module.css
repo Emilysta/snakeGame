@@ -1,0 +1,13 @@
+
+
+.board{
+    --size: 524px;
+    --column-size: calc(var(--size)/20);
+    width: var(--size);
+    height: var(--size);
+    background-color: #242526; 
+    background-image: 
+    linear-gradient(to right, #3e4042 1px, transparent 1px),
+    linear-gradient(to bottom, #3e4042 1px, transparent 1px);
+    background-size: var(--column-size) var(--column-size);
+}

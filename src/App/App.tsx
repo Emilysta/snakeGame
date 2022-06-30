@@ -1,9 +1,10 @@
+import GameView from 'Components/GameView/GameView';
 import styles from './App.module.css';
 
 function App() {
   return (
     <div className={styles.App}>
-      text
+      <GameView />
     </div>
   );
 }
