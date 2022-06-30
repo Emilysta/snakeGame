@@ -47,10 +47,10 @@ export class Game {
     }
 
     checkColision() {
-        this.checkCollisionWithApple();
-        this.checkCollisionWithBomb();
-        this.checkCollisionWithSelf();
-        this.checkCollisionWithBoardEnd();
+        if (this.checkCollisionWithApple()) return;
+        if (this.checkCollisionWithBomb()) return;
+        if (this.checkCollisionWithSelf()) return;
+        if (this.checkCollisionWithBoardEnd()) return;
     }
 
     checkCollisionWithApple() {
@@ -59,27 +59,31 @@ export class Game {
         if (this.checkTwoPointsCollision(snakeHead, applePosiion)) {
             this.snake.makeLonger();
             this.apple.setIsChangePositionExpected(true);
+            return true;
         }
+        return false;
     }
 
     checkCollisionWithBomb() {
         const snakeHead = this.snake.position[0];
-        this.bombs.positions.forEach(bombPosition => {
+        return !this.bombs.positions.every(bombPosition => {
             if (this.checkTwoPointsCollision(snakeHead, bombPosition)) {
                 this.endGame();
-                return;
+                return false;
             }
+            return true;
         });
     }
 
     checkCollisionWithSelf() {
         const snakeHead = this.snake.position[0];
         const sliced = this.snake.position.slice(2);
-        sliced.forEach(point => {
+        return !sliced.every(point => {
             if (this.checkTwoPointsCollision(snakeHead, point)) {
                 this.endGame();
-                return;
+                return false;
             }
+            return true;
         });
     }
 
@@ -87,12 +91,13 @@ export class Game {
         const snakeHead = this.snake.position[0];
         if (snakeHead.x < 0 || snakeHead.y < 0) {
             this.endGame();
-            return;
+            return true;
         }
         if (snakeHead.x > 19 || snakeHead.y > 19) {
             this.endGame();
-            return;
+            return true;
         }
+        return false;
     }
 
     checkTwoPointsCollision(point1: Point, point2: Point) {
@@ -104,6 +109,7 @@ export class Game {
     }
 
     updateGameLoop() {
+        this.context.clearRect(0, 0, 1024, 1024);
         this.apple.update();
         this.snake.update();
         this.bombs.update();
@@ -137,12 +143,11 @@ export class Game {
     }
 
     endGame() {
+        console.log('end');
         if (this.timer !== undefined) {
             clearInterval(this.timer);
             this.timer = undefined;
-            this.apple.end();
-            this.snake.end();
-            this.bombs.end();
+            this.context.clearRect(0, 0, 1024, 1024);
         }
     }
 }

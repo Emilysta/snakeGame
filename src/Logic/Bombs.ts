@@ -50,12 +50,6 @@ export class Bombs implements GameItem {
         this.context.closePath();
     }
 
-    clearDraw() {
-        this.positions.forEach((point) => {
-            this.context.clearRect((point.x) * TILE_SIZE, (point.y) * TILE_SIZE, TILE_SIZE, TILE_SIZE);
-        });
-    }
-
     start() {
         if (this.timer === undefined) {
             this.timer = setInterval(this.setIsNewBombExpected.bind(this), 10 * 1000);
@@ -78,6 +72,7 @@ export class Bombs implements GameItem {
     }
 
     update() {
+        this.draw();
         if (this.isNewBombExpected)
             this.addNewBomb();
     }
@@ -86,7 +81,7 @@ export class Bombs implements GameItem {
         if (this.timer !== undefined) {
             clearInterval(this.timer);
             this.timer = undefined;
-            this.clearDraw();
+            this.reset();
         }
     }
 }

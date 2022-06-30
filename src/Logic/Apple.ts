@@ -27,7 +27,6 @@ export class Apple implements GameItem {
         const x = RandomInt.getRandomIntOnInterval(0, 20);
         const y = RandomInt.getRandomIntOnInterval(0, 20);
         const newPos = new Point(x, y);
-        this.clearDraw();
         this.position = newPos;
         this.draw();
         this.isChangePositionExpected = false;
@@ -43,11 +42,6 @@ export class Apple implements GameItem {
         this.context.closePath()
     }
 
-    clearDraw() {
-        const x = (this.position.x) * TILE_SIZE;
-        const y = (this.position.y) * TILE_SIZE;
-        this.context.clearRect(x, y, TILE_SIZE, TILE_SIZE);
-    }
 
     start() {
         if (this.timer === undefined) {
@@ -74,13 +68,14 @@ export class Apple implements GameItem {
     update() {
         if (this.isChangePositionExpected)
             this.changePosition();
+        this.draw();
     }
 
     end() {
         if (this.timer !== undefined) {
             clearInterval(this.timer);
             this.timer = undefined;
-            this.clearDraw();
+            this.reset();
         }
     }
 }

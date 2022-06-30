@@ -1,32 +1,44 @@
-import { MoveDirection, TILE_SIZE } from "Utils/GameUtils";
+import { MoveDirection, SNAKE_STEP, TILE_SIZE } from "Utils/GameUtils";
 import { Point } from "Utils/Point";
 import { GameItem } from "./GameItem";
 
 const startSnake =
     [
-        new Point(7, 5),
-        new Point(7, 4),
-        new Point(7, 3),
-        new Point(7, 2),
+        new Point(5, 7),
+        new Point(4, 7),
+        new Point(3, 7),
+        new Point(2, 7),
     ]
+
+type DirectionElemenet = {
+    moveDir: Point,
+    countOfSnakeParts: number,
+    //count of snake Parts(Points) 
+    //that direction affects
+}
 
 export class Snake implements GameItem {
     position: Point[] = startSnake;
     context: CanvasRenderingContext2D;
-    speed: number = 0.1;
-    moveDirection: Point = new Point(0, 1);
-    timer: NodeJS.Timer | undefined;
+    speed: number = 1;
+    moveDirections: DirectionElemenet[] = [{ moveDir: new Point(1, 0), countOfSnakeParts: 4 }];
+    nextDirection: Point | null = null;
+    traveledDistance: number = 0;
+    isMakeLongerExpected: boolean = false;
+    countOfEatenApples: number = 0;
 
-    constructor(context: CanvasRenderingContext2D, snakePosition?: Point[]) {
+
+    constructor(context: CanvasRenderingContext2D) {
         this.context = context;
-        if (snakePosition)
-            this.position = snakePosition;
     }
 
     makeLonger() {
-        this.clearDraw();
-        this.position.push(new Point(10, 10)); //toDo
-        this.draw();
+        this.isMakeLongerExpected = true;
+        this.countOfEatenApples += 1;
+        if (this.countOfEatenApples === 10) {
+            this.countOfEatenApples = 0;
+            this.makeFaster();
+        }
     }
 
     makeFaster() {
@@ -34,93 +46,125 @@ export class Snake implements GameItem {
     }
 
     move() {
-        this.clearDraw();
-        this.position.forEach((point) => {
-            point.x += this.moveDirection.x * this.speed;
-            point.y += this.moveDirection.y * this.speed;
-        })
-        this.draw();
+        let startIndex = 0;
+        let count = 0;
+
+        this.moveDirections.forEach((direction) => {
+            count += direction.countOfSnakeParts;
+            for (let it = startIndex; it < count; it++) {
+                const x = this.position[it].x + (direction.moveDir.x * SNAKE_STEP);
+                const y = this.position[it].y + (direction.moveDir.y * SNAKE_STEP);
+                this.position[it].x = Math.round(x * 100) / 100;
+                this.position[it].y = Math.round(y * 100) / 100;
+            }
+            startIndex = count;
+        });
+
+        const snakeHead = this.position[0];
+        this.traveledDistance += 1;
+        console.log('lol')
+        if (this.isMakeLongerExpected) {
+            this.isMakeLongerExpected = false;
+            const lastIndex = this.moveDirections.length - 1;
+            const lastDir = this.moveDirections[lastIndex];
+            lastDir.countOfSnakeParts += 1;
+            const lastPos = this.position[count - 1];
+            this.position.push(new Point(lastPos.x - lastDir.moveDir.x, lastPos.y - lastDir.moveDir.y));
+        }
+
+        if (this.traveledDistance >= (1 / SNAKE_STEP) && this.nextDirection !== null &&
+            Number.isInteger(snakeHead.x) && Number.isInteger(snakeHead.y)) {
+            this.moveDirections.unshift({ moveDir: this.nextDirection, countOfSnakeParts: 1 });
+            this.nextDirection = null;
+            this.modifyLastDirection();
+            this.traveledDistance = 0;
+        }
+
+        if (this.traveledDistance >= (1 / SNAKE_STEP) && this.moveDirections.length > 1) {
+            this.traveledDistance = 0;
+            this.moveDirections[0].countOfSnakeParts += 1;
+            this.modifyLastDirection();
+        }
+
     }
 
-    changeMoveDirection(direction: MoveDirection) {
-        switch (direction) {
+    changeMoveDirection(dir: MoveDirection) {
+        let newDirection: Point;
+        switch (dir) {
             case MoveDirection.Up: {
-                this.moveDirection = new Point(0, -1);
+                newDirection = new Point(0, -1);
                 break;
             }
             case MoveDirection.Down: {
-                this.moveDirection = new Point(0, 1);
+                newDirection = new Point(0, 1);
                 break;
             }
             case MoveDirection.Left: {
-                this.moveDirection = new Point(-1, 0);
+                newDirection = new Point(-1, 0);
                 break;
             }
             case MoveDirection.Right: {
-                this.moveDirection = new Point(1, 0);
+                newDirection = new Point(1, 0);
                 break;
             }
         }
+
+        if (this.checkIfDirectionPossible(newDirection))
+            this.nextDirection = newDirection;
     }
 
-    die() {
-        this.clearDraw();
-        this.position.shift();
-        this.draw();
+    modifyLastDirection() {
+        const lastIndex = this.moveDirections.length - 1;
+        const lastDirection = this.moveDirections[lastIndex];
+        lastDirection.countOfSnakeParts -= 1;
+        if (lastDirection.countOfSnakeParts <= 0)
+            this.moveDirections.pop();
     }
 
-    length() {
-        return this.position.length;
+    checkIfDirectionPossible(dir: Point) {
+        const firstDir = this.moveDirections[0].moveDir;
+        if (dir.x === firstDir.x && dir.y === firstDir.y)
+            return false;
+        if (dir.x === -firstDir.x && dir.y === -firstDir.y)
+            return false;
+        return true;
     }
 
     draw() {
         this.context.lineWidth = TILE_SIZE;
         this.context.strokeStyle = '#7ec710';
         this.context.lineCap = 'round';
+        this.context.lineJoin = 'round';
         this.context.beginPath();
         this.position.forEach((point) =>
-            this.context.lineTo((point.y) * TILE_SIZE, (point.x + 0.5) * TILE_SIZE)
+            this.context.lineTo((point.x + 0.5) * TILE_SIZE, (point.y + 0.5) * TILE_SIZE)
         );
         this.context.stroke();
     }
 
-    clearDraw() {
-        this.position.forEach((point) =>
-            this.context.clearRect((point.y - 0.5) * TILE_SIZE - 1.5, (point.x) * TILE_SIZE - 1.5, TILE_SIZE + 3, TILE_SIZE + 3)
-        );
-    }
-
     start() {
-        if (this.timer === undefined) {
-            this.timer = setInterval(this.move.bind(this), 1000 / 60);
-            this.draw();
-        }
+        this.draw();
     }
 
     pause() {
-        if (this.timer !== undefined) {
-            clearInterval(this.timer);
-            this.timer = undefined;
-        }
     }
 
     reset() {
         this.position = startSnake;
-        this.speed = 0.1;
-        this.moveDirection = new Point(0, 1);
-        clearInterval(this.timer);
-        this.timer = undefined;
+        this.speed = 1;
+        this.moveDirections = [{ moveDir: new Point(1, 0), countOfSnakeParts: 4 }];
+        this.nextDirection = null;
+        this.traveledDistance = 0;
+        this.isMakeLongerExpected = false;
+        this.countOfEatenApples = 0;
     }
 
     update() {
         this.move();
+        this.draw();
     }
 
     end() {
-        if (this.timer !== undefined) {
-            clearInterval(this.timer);
-            this.timer = undefined;
-            this.clearDraw();
-        }
+        this.reset();
     }
 }
