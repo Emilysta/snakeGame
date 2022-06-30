@@ -3,5 +3,8 @@ export interface GameItem {
     draw(): void;
     clearDraw(): void;
     start(): void;
-    stop(): void;
+    pause(): void;
+    reset(): void;
+    update(): void;
+    end(): void;
 }

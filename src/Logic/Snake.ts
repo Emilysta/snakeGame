@@ -12,15 +12,16 @@ const startSnake =
 const SIZE = 1024 / 20;
 
 export class Snake implements GameItem {
-    position: Point[];
+    position: Point[] = startSnake;
     context: CanvasRenderingContext2D;
     speed: number = 0.1;
     moveDirection: Point = new Point(0, 1);
     timer: NodeJS.Timer | undefined;
 
-    constructor(context: CanvasRenderingContext2D, snakePosition: Point[] = startSnake) {
+    constructor(context: CanvasRenderingContext2D, snakePosition?: Point[]) {
         this.context = context;
-        this.position = snakePosition;
+        if (snakePosition)
+            this.position = snakePosition;
     }
 
     makeLonger() {
@@ -34,8 +35,6 @@ export class Snake implements GameItem {
     }
 
     move() {
-        console.log(this.position);
-        console.log(this.moveDirection);
         this.clearDraw();
         this.position.forEach((point) => {
             point.x += this.moveDirection.x * this.speed;
@@ -72,12 +71,36 @@ export class Snake implements GameItem {
     }
 
     start() {
-        if (this.timer === undefined)
+        if (this.timer === undefined) {
             this.timer = setInterval(this.move.bind(this), 1000 / 60);
+            this.draw();
+        }
     }
 
-    stop() {
+    pause() {
+        if (this.timer !== undefined) {
+            clearInterval(this.timer);
+            this.timer = undefined;
+        }
+    }
+
+    reset() {
+        this.position = startSnake;
+        this.speed = 0.1;
+        this.moveDirection = new Point(0, 1);
         clearInterval(this.timer);
         this.timer = undefined;
+    }
+
+    update() {
+        this.move();
+    }
+
+    end() {
+        if (this.timer !== undefined) {
+            clearInterval(this.timer);
+            this.timer = undefined;
+            this.clearDraw();
+        }
     }
 }

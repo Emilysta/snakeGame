@@ -1,4 +1,7 @@
-
+.gameBox{
+    display: flex;
+    flex-direction: column;
+}
 
 .board{
     --size: 524px;
@@ -10,4 +13,46 @@
     linear-gradient(to right, #3e4042 1px, transparent 1px),
     linear-gradient(to bottom, #3e4042 1px, transparent 1px);
     background-size: var(--column-size) var(--column-size);
+}
+
+.startButton{
+    z-index: 2;
+    background-color: red;
+    color: white;
+}
+
+.startButton:hover{
+    background-color: rgb(255, 50, 50);
+}
+
+.startButton:active{
+    background-color: purple;
+}
+
+.resetButton{
+    z-index: 2;
+    background-color: green;
+    color: white;
+}
+
+.resetButton:hover{
+    background-color: greenyellow;
+}
+
+.resetButton:active{
+    background-color: lightgreen;
+}
+
+.pauseButton{
+    z-index: 2;
+    background-color: black;
+    color: white;
+}
+
+.pauseButton:hover{
+    background-color: grey;
+}
+
+.pauseButton:active{
+    background-color: lightgrey;
 }

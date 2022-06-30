@@ -5,12 +5,19 @@ import { GameItem } from "./GameItem";
 const SIZE = 1024.0 / 20.0;
 
 export class Apple implements GameItem {
-    position: Point;
+    position: Point = new Point(5, 5);
     context: CanvasRenderingContext2D;
+    isChangePositionExpected: boolean = false;
+    timer: NodeJS.Timer | undefined;
 
-    constructor(context: CanvasRenderingContext2D, applePosition: Point = new Point(5, 5)) {
+    constructor(context: CanvasRenderingContext2D, applePosition?: Point) {
         this.context = context;
-        this.position = applePosition;
+        if (applePosition)
+            this.position = applePosition;
+    }
+
+    setIsChangePositionExpected() {
+        this.isChangePositionExpected = true;
     }
 
     changePosition() {
@@ -20,6 +27,7 @@ export class Apple implements GameItem {
         this.clearDraw();
         this.position = newPos;
         this.draw();
+        this.isChangePositionExpected = false;
     }
 
     draw() {
@@ -39,10 +47,37 @@ export class Apple implements GameItem {
     }
 
     start() {
-
+        if (this.timer === undefined) {
+            this.timer = setInterval(this.setIsChangePositionExpected.bind(this), 10 * 1000);
+            this.draw();
+        }
     }
 
-    stop() {
+    pause() {
+        if (this.timer !== undefined) {
+            clearInterval(this.timer);
+            this.timer = undefined;
+        }
+    }
 
+    reset() {
+        this.position = new Point(5, 5);
+        this.isChangePositionExpected = false;
+        clearInterval(this.timer);
+        this.timer = undefined;
+        console.log('resetApple');
+    }
+
+    update() {
+        if (this.isChangePositionExpected)
+            this.changePosition();
+    }
+
+    end() {
+        if (this.timer !== undefined) {
+            clearInterval(this.timer);
+            this.timer = undefined;
+            this.clearDraw();
+        }
     }
 }
