@@ -56,8 +56,10 @@ export class Game {
     checkCollisionWithApple() {
         const snakeHead = this.snake.position[0];
         const applePosiion = this.apple.position;
-        if (this.checkTwoPointsCollision(snakeHead, applePosiion))
+        if (this.checkTwoPointsCollision(snakeHead, applePosiion)) {
             this.snake.makeLonger();
+            this.apple.setIsChangePositionExpected(true);
+        }
     }
 
     checkCollisionWithBomb() {
@@ -71,11 +73,26 @@ export class Game {
     }
 
     checkCollisionWithSelf() {
-
+        const snakeHead = this.snake.position[0];
+        const sliced = this.snake.position.slice(2);
+        sliced.forEach(point => {
+            if (this.checkTwoPointsCollision(snakeHead, point)) {
+                this.endGame();
+                return;
+            }
+        });
     }
 
     checkCollisionWithBoardEnd() {
-
+        const snakeHead = this.snake.position[0];
+        if (snakeHead.x < 0 || snakeHead.y < 0) {
+            this.endGame();
+            return;
+        }
+        if (snakeHead.x > 19 || snakeHead.y > 19) {
+            this.endGame();
+            return;
+        }
     }
 
     checkTwoPointsCollision(point1: Point, point2: Point) {
