@@ -1,0 +1,24 @@
+.customButton{
+    fill: white;
+    color: white;
+    background: none;
+    outline: none;
+    border: none;
+}
+
+.customButton:hover{
+    fill: #da535e;
+    color: #da535e;
+}
+
+.customButton:active{
+    fill: #d2202e;
+    color: #d2202e;
+}
+
+.customButtonContentBox{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
