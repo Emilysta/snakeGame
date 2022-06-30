@@ -15,8 +15,12 @@ export class Apple implements GameItem {
             this.position = applePosition;
     }
 
-    setIsChangePositionExpected() {
+    setIsChangePositionExpected(resetTimer?: boolean) {
         this.isChangePositionExpected = true;
+        if (resetTimer) {
+            clearInterval(this.timer);
+            this.timer = setInterval(this.setIsChangePositionExpected.bind(this), 10 * 1000);
+        }
     }
 
     changePosition() {
