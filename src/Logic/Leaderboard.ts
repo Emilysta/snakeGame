@@ -22,6 +22,7 @@ export class Leaderboard {
 
     deleteLeaderboard() {
         window.localStorage.removeItem('snakeGameLeaderboard');
+        this.snakeGameLeaderboad = [];
     }
 
     addScoreToLeaderboard(newPlayerName: string, newScore: number) {
