@@ -5,9 +5,10 @@ import { BOARD_SIZE } from 'Utils/GameUtils';
 import styles from './GameView.module.css';
 import { PlayFill, PauseFill } from 'react-bootstrap-icons';
 import Score from 'Components/Score/Score';
+import InputModal from 'Components/InputModal/InputModal';
 
 type GameViewProps = {
-    gameEndedCallback?: (score: number) => void,
+    gameEndedCallback?: (playerName: string, score: number) => void,
 }
 
 export default function GameView(props: GameViewProps) {
@@ -19,6 +20,7 @@ export default function GameView(props: GameViewProps) {
         score: 0,
     })
     const [countdown, setCountdown] = useState(-1);
+    const [showModal, setShowModal] = useState(false);
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -58,10 +60,14 @@ export default function GameView(props: GameViewProps) {
 
     function gameStatusChanged(currentGameStatus: GameStatus) {
         setGameStatus({ ...currentGameStatus });
-        if (currentGameStatus.isEnd) {
-            if (props.gameEndedCallback)
-                props.gameEndedCallback(currentGameStatus.score);
-        }
+        if (currentGameStatus.isEnd)
+            setShowModal(true);
+    }
+
+    function submitScore(inputValue: string) {
+        setShowModal(false);
+        if (props.gameEndedCallback)
+            props.gameEndedCallback(inputValue, gameStatus.score);
     }
 
     function onBoardKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
@@ -95,7 +101,7 @@ export default function GameView(props: GameViewProps) {
                     }
                 </div>
             }
-
+            <InputModal isShown={showModal} onSubmit={submitScore} />
         </div>
     )
 }

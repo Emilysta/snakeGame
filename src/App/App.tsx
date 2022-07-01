@@ -6,10 +6,10 @@ import styles from './App.module.css';
 import { Route, Routes, Link } from 'react-router-dom';
 
 function App() {
-  const [leaderboard, setLeaderboard] = useState(new Leaderboard());
+  const [leaderboard] = useState(new Leaderboard());
 
-  function saveScore(score: number) {
-    leaderboard.addScoreToLeaderboard("Emilia", score);
+  function saveScore(playerName: string, score: number) {
+    leaderboard.addScoreToLeaderboard(playerName, score);
   }
 
   return (

@@ -1,0 +1,16 @@
+.modalShown{
+    display: block;
+    border-radius: 10px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+    background-color: white;
+    padding: 10px;
+    color: black;
+}
+
+.modalHidden{
+    display: none;
+}
