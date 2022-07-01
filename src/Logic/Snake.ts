@@ -23,10 +23,10 @@ export class Snake implements GameItem {
     traveledDistance: number = 0;
     isMakeLongerExpected: boolean = false;
     countOfEatenApples: number = 0;
-    fullTileCallback: () => void;
+    fullTileCallback: (previous: Point) => void;
 
 
-    constructor(context: CanvasRenderingContext2D, fullTileCallback: () => void) {
+    constructor(context: CanvasRenderingContext2D, fullTileCallback: (previous: Point) => void) {
         this.context = context;
         this.fullTileCallback = fullTileCallback;
     }
@@ -47,6 +47,9 @@ export class Snake implements GameItem {
     move() {
         let startIndex = 0;
         let count = 0;
+
+        const prevRef = this.position[this.position.length - 1];
+        const previous = new Point(Math.floor(prevRef.x - 0.1), Math.floor(prevRef.y - 0.1));
 
         this.moveDirections.forEach((direction) => {
             count += direction.countOfSnakeParts;
@@ -77,19 +80,19 @@ export class Snake implements GameItem {
             this.nextDirection = null;
             this.modifyLastDirection();
             this.traveledDistance = 0;
-            this.fullTileCallback();
+            this.fullTileCallback(previous);
         }
 
         if (this.traveledDistance >= (1 / SNAKE_STEP) && this.moveDirections.length > 1) {
             this.traveledDistance = 0;
             this.moveDirections[0].countOfSnakeParts += 1;
             this.modifyLastDirection();
-            this.fullTileCallback();
+            this.fullTileCallback(previous);
         }
 
         if (this.traveledDistance >= (1 / SNAKE_STEP)) {
             this.traveledDistance = 0
-            this.fullTileCallback();
+            this.fullTileCallback(previous);
         }
 
     }
