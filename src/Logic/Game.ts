@@ -39,13 +39,13 @@ export class Game {
 
     }
 
-    startGame(withCallbackOfResume: boolean = false) {
+    startGame(isAsContinue: boolean = false) {
         if (this.timer === undefined) {
-            this.setupBoard();
             this.gameStatus.isPlaying = true;
             this.gameStatus.isPaused = false;
-            if (withCallbackOfResume) {
-                this.gameStatusChanged(this.gameStatus);
+            this.gameStatusChanged(this.gameStatus);
+            if (!isAsContinue) {
+                this.setupBoard();
             }
             this.apple.start();
             this.snake.start();
@@ -80,7 +80,7 @@ export class Game {
         this.board = [];
         this.freeSpace = {};
         this.context.clearRect(0, 0, 1024, 1024);
-        this.startGame(true);
+        this.startGame();
     }
 
     updateGameLoop() {

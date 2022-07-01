@@ -25,36 +25,36 @@ export default function GameView(props: GameViewProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     useEffect(() => {
-        const canvas = canvasRef.current
-        const context = canvas?.getContext('2d')
+        const canvas = canvasRef.current;
+        const context = canvas?.getContext('2d');
         if (context) {
             setGame(new Game(context, gameStatusChanged));
         }
     }, [])
 
     function startGame() {
-        const board = document.getElementById("gameBoard");
         timeout(() => {
-            board?.focus();
-            game?.startGame(true);
+            canvasRef.current?.focus();
+            game?.startGame();
         });
     }
 
     function resetGame() {
-        const board = document.getElementById("gameBoard");
         timeout(() => {
-            board?.focus();
+            canvasRef.current?.focus();
             game?.resetGame();
         });
     }
 
     function pauseGame() {
-        if (gameStatus.isPlaying)
-            game?.pauseGame();
+        game?.pauseGame();
     }
 
     function continueGame() {
-        timeout(() => game?.startGame(true));
+        timeout(() => {
+            canvasRef.current?.focus();
+            game?.startGame(true);
+        });
     }
 
     function timeout(callbackFunction: () => void) {
@@ -66,8 +66,7 @@ export default function GameView(props: GameViewProps) {
         setTimeout(() => {
             clearInterval(interval);
             callbackFunction();
-
-            setCountdown(-1)
+            setCountdown(-1);
         }, 3000);
     }
 
@@ -83,13 +82,13 @@ export default function GameView(props: GameViewProps) {
             props.gameEndedCallback(inputValue, gameStatus.score);
     }
 
-    function onBoardKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    function onBoardKeyDown(e: React.KeyboardEvent<HTMLCanvasElement>) {
         game?.reactToUserInput(e.key);
     }
 
     const score = gameStatus.score;
     return (
-        <div className={styles.gameBox} onKeyDown={onBoardKeyDown} tabIndex={0} id={"gameBoard"}>
+        <div className={styles.gameBox}>
             Game View
             <div className={styles.infoBox}>
                 <Score score={score} />
@@ -97,13 +96,13 @@ export default function GameView(props: GameViewProps) {
                     <CustomButton value="Pause" onClick={pauseGame} disabled={!gameStatus.isPlaying} icon={<PauseFill height={30} width={30} />} />
                 }
                 {gameStatus.isPaused &&
-                    <CustomButton value="Continue" onClick={continueGame} disabled={!gameStatus.isPlaying} icon={<PauseFill height={30} width={30} />} />
+                    <CustomButton value="Continue" onClick={continueGame} disabled={!gameStatus.isPlaying} icon={<PlayFill height={30} width={30} />} />
                 }
             </div>
 
-            <canvas className={styles.board} ref={canvasRef} height={BOARD_SIZE} width={BOARD_SIZE} id="gameCanvas"></canvas>
+            <canvas className={styles.board} ref={canvasRef} height={BOARD_SIZE} width={BOARD_SIZE} id="gameCanvas" onKeyDown={onBoardKeyDown} tabIndex={0} />
 
-            {countdown !== -1 && <div className={styles.gameOverlay}>
+            {(countdown !== -1 || gameStatus.isPaused) && <div className={styles.gameOverlay}>
                 <h1>{countdown}</h1>
             </div>
             }
