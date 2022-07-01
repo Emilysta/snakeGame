@@ -5,3 +5,35 @@
   overflow: hidden;
   color: white;
 }
+
+.appNavbar{
+    display:flex;
+    justify-content:center;
+
+}
+
+.appNavbarItemsBox{
+  margin: 10px 0;
+  padding: 0;
+  list-style: none;
+  display:flex;
+  justify-content:center;
+  align-items: center;
+  column-gap: 10px;
+}
+
+.appLink{
+  text-decoration: none;
+  color: white;
+}
+
+.appLink:hover{
+  text-decoration: underline;
+  color:#da535e;
+}
+
+.appLink:active{
+  text-decoration: underline;
+  color:#d2202e;
+}
+

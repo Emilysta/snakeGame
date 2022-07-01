@@ -14,10 +14,13 @@ function App() {
 
   return (
     <div className={styles.app}>
-      <nav>
-        <Link to="/leaderboard">Leaderboard</Link>
-        <Link to="/">Game</Link>
+      <nav className={styles.appNavbar}>
+        <ul className={styles.appNavbarItemsBox}>
+          <li><Link to="/leaderboard" className={styles.appLink}>Leaderboard</Link></li>
+          <li><Link to="/" className={styles.appLink}>Game</Link></li>
+        </ul>
       </nav>
+      <hr />
       <h1>Snake</h1>
       <hr />
       <Routes>
