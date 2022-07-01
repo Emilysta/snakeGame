@@ -33,6 +33,8 @@ export default function GameView(props: GameViewProps) {
     }, [])
 
     function startGame() {
+        const board = document.getElementById("gameBoard");
+        board?.focus();
         let i = 3;
         const interval = setInterval(() => {
             setCountdown(i);
@@ -76,7 +78,7 @@ export default function GameView(props: GameViewProps) {
 
     const score = gameStatus.score;
     return (
-        <div className={styles.gameBox} onKeyDown={onBoardKeyDown} tabIndex={0}>
+        <div className={styles.gameBox} onKeyDown={onBoardKeyDown} tabIndex={0} id={"gameBoard"}>
             Game View
             <div className={styles.infoBox}>
                 <Score score={score} />
@@ -88,7 +90,7 @@ export default function GameView(props: GameViewProps) {
                 }
             </div>
 
-            <canvas className={styles.board} ref={canvasRef} height={BOARD_SIZE} width={BOARD_SIZE}></canvas>
+            <canvas className={styles.board} ref={canvasRef} height={BOARD_SIZE} width={BOARD_SIZE} id="gameCanvas"></canvas>
 
             {(!gameStatus.isPlaying || gameStatus.isEnd) &&
                 <div className={styles.buttonOverlay}>
