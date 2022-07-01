@@ -49,7 +49,7 @@ export class Bombs implements GameItem {
 
     start() {
         if (this.timer === undefined) {
-            this.timer = setInterval(this.setIsNewBombExpected.bind(this), 10 * 1000);
+            this.timer = setInterval(this.setIsNewBombExpected.bind(this), 30 * 1000);
             this.draw();
         }
     }
