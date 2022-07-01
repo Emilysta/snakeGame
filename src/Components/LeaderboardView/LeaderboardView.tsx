@@ -1,4 +1,5 @@
-import { LeaderboardPlace } from "Logic/Leaderboard"
+import { LeaderboardPlace } from "Logic/Leaderboard";
+import styles from './LeaderboardView.module.css';
 
 type LeaderboardViewProps = {
     leaderboard: LeaderboardPlace[];
@@ -6,13 +7,24 @@ type LeaderboardViewProps = {
 
 export default function LeaderboardView(props: LeaderboardViewProps) {
     return (
-        <div>
-            Leaderboard View
-            {
-                props.leaderboard.map((place, i) =>
-                    <div key={i}>{i + 1}. {place.playerName} {place.score}</div>
-                )
-            }
+        <div className={styles.leaderboardViewBox}>
+            <h3>Leaderboard View</h3>
+            <div className={styles.scoresBox}>
+                <div className={`${styles.scoreLabel} ${styles.scoreRow}`}>
+                    <p>No.</p>
+                    <p>Player name</p>
+                    <p className={styles.score}>Score</p>
+                </div>
+                {
+                    props.leaderboard.map((place, i) =>
+                        <div className={styles.scoreRow} key={i}>
+                            <p>{i + 1}.</p>
+                            <p>{place.playerName} </p>
+                            <p className={styles.score}>{place.score}</p>
+                        </div>
+                    )
+                }
+            </div>
         </div>
     )
 }
