@@ -1,6 +1,5 @@
-import { TILE_SIZE } from "Utils/GameUtils";
+import { BoardTile, TILE_SIZE } from "Utils/GameUtils";
 import { Point } from "Utils/Point";
-import { RandomInt } from "Utils/RandomInt";
 import { GameItem } from "./GameItem";
 
 export class Bombs implements GameItem {
@@ -8,11 +7,11 @@ export class Bombs implements GameItem {
     context: CanvasRenderingContext2D;
     timer: NodeJS.Timer | undefined;
     isNewBombExpected: boolean = false;
+    randomPoisitionNeededCallback: (type: BoardTile, previous?: Point, deletePreviou?: boolean) => Point;
 
-    constructor(context: CanvasRenderingContext2D, bombsPositions?: Point[]) {
+    constructor(context: CanvasRenderingContext2D, randomPoisitionNeededCallback: (type: BoardTile, previous?: Point, deletePreviou?: boolean) => Point) {
         this.context = context;
-        if (bombsPositions)
-            this.positions = bombsPositions;
+        this.randomPoisitionNeededCallback = randomPoisitionNeededCallback;
     }
 
     setIsNewBombExpected() {
@@ -20,9 +19,7 @@ export class Bombs implements GameItem {
     }
 
     addNewBomb() {
-        const x = RandomInt.getRandomIntOnInterval(0, 20);
-        const y = RandomInt.getRandomIntOnInterval(0, 20);
-        const newBomb = new Point(x, y);
+        const newBomb = this.randomPoisitionNeededCallback(BoardTile.Bomb);
         this.positions.push(newBomb);
         this.drawNewBomb(newBomb);
         this.isNewBombExpected = false;

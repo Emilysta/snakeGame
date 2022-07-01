@@ -8,3 +8,10 @@ export enum MoveDirection {
     Left,
     Right,
 }
+
+export enum BoardTile {
+    Empty,
+    Snake,
+    Apple,
+    Bomb
+}

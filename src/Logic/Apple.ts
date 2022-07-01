@@ -1,6 +1,5 @@
-import { TILE_SIZE } from "Utils/GameUtils";
+import { BoardTile, TILE_SIZE } from "Utils/GameUtils";
 import { Point } from "Utils/Point";
-import { RandomInt } from "Utils/RandomInt";
 import { GameItem } from "./GameItem";
 
 export class Apple implements GameItem {
@@ -8,11 +7,11 @@ export class Apple implements GameItem {
     context: CanvasRenderingContext2D;
     isChangePositionExpected: boolean = false;
     timer: NodeJS.Timer | undefined;
+    randomPoisitionNeededCallback: (type: BoardTile, previous?: Point, deletePreviou?: boolean) => Point;
 
-    constructor(context: CanvasRenderingContext2D, applePosition?: Point) {
+    constructor(context: CanvasRenderingContext2D, randomPoisitionNeededCallback: (type: BoardTile, previous?: Point, deletePreviou?: boolean) => Point) {
         this.context = context;
-        if (applePosition)
-            this.position = applePosition;
+        this.randomPoisitionNeededCallback = randomPoisitionNeededCallback;
     }
 
     setIsChangePositionExpected(resetTimer?: boolean) {
@@ -24,9 +23,7 @@ export class Apple implements GameItem {
     }
 
     changePosition() {
-        const x = RandomInt.getRandomIntOnInterval(0, 20);
-        const y = RandomInt.getRandomIntOnInterval(0, 20);
-        const newPos = new Point(x, y);
+        const newPos = this.randomPoisitionNeededCallback(BoardTile.Apple,this.position, true);
         this.position = newPos;
         this.draw();
         this.isChangePositionExpected = false;
