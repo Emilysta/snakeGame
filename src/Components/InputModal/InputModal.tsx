@@ -11,11 +11,9 @@ export default function InputModal(props: InputModalProps) {
 
     return (
         <div className={props.isShown ? styles.modalShown : styles.modalHidden}>
-            <form onSubmit={() => props.onSubmit(inputValue)} >
-                <label htmlFor='playerName'>Player name:</label><br></br>
-                <input type={'text'} name="playerName" value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
-                <input type="submit" value="OK" />
-            </form>
+            <label htmlFor='playerName'>Player name:</label><br></br>
+            <input type={'text'} name="playerName" value={inputValue} onChange={(e) => setInputValue(e.target.value)} />
+            <input type="submit" value="OK" onClick={()=>props.onSubmit(inputValue)} />
         </div>
     )
 }
