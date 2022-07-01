@@ -3,11 +3,14 @@ import { Game, GameStatus } from 'Logic/Game';
 import { useEffect, useRef, useState } from 'react';
 import { BOARD_SIZE } from 'Utils/GameUtils';
 import styles from './GameView.module.css';
-import { PlayFill, PauseFill, XLg } from 'react-bootstrap-icons';
+import { PlayFill, PauseFill } from 'react-bootstrap-icons';
+import Score from 'Components/Score/Score';
 
+type GameViewProps = {
+    gameEndedCallback?: (score: number) => void,
+}
 
-
-export default function GameView() {
+export default function GameView(props: GameViewProps) {
     const [game, setGame] = useState<Game | undefined>(undefined);
     const [gameStatus, setGameStatus] = useState<GameStatus>({
         isPlaying: false,
@@ -15,6 +18,7 @@ export default function GameView() {
         isPaused: false,
         score: 0,
     })
+    const [countdown, setCountdown] = useState(-1);
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -27,7 +31,16 @@ export default function GameView() {
     }, [])
 
     function startGame() {
-        setTimeout(() => game?.startGame(), 2000);
+        let i = 3;
+        const interval = setInterval(() => {
+            setCountdown(i);
+            i--;
+        }, 1000)
+        setTimeout(() => {
+            clearInterval(interval);
+            game?.startGame(true);
+            setCountdown(-1)
+        }, 3000);
     }
 
     function resetGame() {
@@ -35,7 +48,8 @@ export default function GameView() {
     }
 
     function pauseGame() {
-        game?.pauseGame();
+        if (gameStatus.isPlaying)
+            game?.pauseGame();
     }
 
     function continueGame() {
@@ -43,34 +57,45 @@ export default function GameView() {
     }
 
     function gameStatusChanged(currentGameStatus: GameStatus) {
-        setGameStatus(currentGameStatus);
+        setGameStatus({ ...currentGameStatus });
+        if (currentGameStatus.isEnd) {
+            if (props.gameEndedCallback)
+                props.gameEndedCallback(currentGameStatus.score);
+        }
     }
 
     function onBoardKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
         game?.reactToUserInput(e.key);
     }
 
+    const score = gameStatus.score;
     return (
         <div className={styles.gameBox} onKeyDown={onBoardKeyDown} tabIndex={0}>
-            <div className={styles.infoBox}></div>
+            Game View
+            <div className={styles.infoBox}>
+                <Score score={score} />
+                {!gameStatus.isPaused &&
+                    <CustomButton value="Pause" onClick={pauseGame} disabled={!gameStatus.isPlaying} icon={<PauseFill height={30} width={30} />} />
+                }
+                {gameStatus.isPaused &&
+                    <CustomButton value="Continue" onClick={continueGame} disabled={!gameStatus.isPlaying} icon={<PauseFill height={30} width={30} />} />
+                }
+            </div>
+
             <canvas className={styles.board} ref={canvasRef} height={BOARD_SIZE} width={BOARD_SIZE}></canvas>
+
             {(!gameStatus.isPlaying || gameStatus.isEnd) &&
                 <div className={styles.buttonOverlay}>
-                    {!gameStatus.isPlaying &&
+                    {countdown !== -1 && <h1>{countdown}</h1>}
+                    {countdown === -1 && !gameStatus.isPlaying &&
                         <CustomButton value="Play" onClick={startGame} contentClassName={styles.buttonContent} icon={<PlayFill height={80} width={80} />} />
                     }
                     {gameStatus.isEnd &&
-                        <CustomButton value="Restart game" onClick={resetGame} contentClassName={styles.buttonContent} icon={<XLg height={80} width={80} />} />
+                        <CustomButton value="Restart game" onClick={resetGame} contentClassName={styles.buttonContent} icon={<PlayFill height={80} width={80} />} />
                     }
                 </div>
             }
-            {gameStatus.isPlaying && !gameStatus.isPaused &&
-                <CustomButton value="Pause" onClick={pauseGame} icon={<PauseFill height={30} width={30} />} />
-            }
 
-            {gameStatus.isPlaying && gameStatus.isPaused &&
-                <CustomButton value="Continue" onClick={continueGame} icon={<PauseFill height={30} width={30} />} />
-            }
         </div>
     )
 }

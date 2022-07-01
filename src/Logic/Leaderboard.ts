@@ -27,14 +27,16 @@ export class Leaderboard {
 
     addScoreToLeaderboard(newPlayerName: string, newScore: number) {
         this.snakeGameLeaderboad.push({ playerName: newPlayerName, score: newScore })
-        this.snakeGameLeaderboad.sort((place1, place2) => place1.score - place2.score);
-        if (this.snakeGameLeaderboad.length > 10)
-            this.snakeGameLeaderboad = this.snakeGameLeaderboad.slice(0, 10);
+        const tempLeaderboard = this.snakeGameLeaderboad.sort((place1, place2) => place2.score - place1.score);
+        if (tempLeaderboard.length > 10)
+            this.snakeGameLeaderboad = tempLeaderboard.slice(0, 10);
+        else
+            this.snakeGameLeaderboad = tempLeaderboard;
         this.saveLeaderboard();
     }
 }
 
-type LeaderboardPlace = {
+export type LeaderboardPlace = {
     playerName: string,
     score: number,
 }

@@ -1,38 +1,55 @@
 .gameBox{
+    --size: 512px;
+    --column-size: calc(var(--size)/20);
+
+    width: var(--size);
+    margin: auto;
+
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100%;
-    width: 100%;
-    --size: 512px;
-    --column-size: calc(var(--size)/20);
+
+    position: relative;
 }
 
 .board{
-    border: 1px solid #3e4042;
-    border-radius: 10px;
     width: var(--size);
     height: var(--size);
+
+    border: 1px solid #3e4042;
+    border-radius: 10px;
+    
     background-color: #242526; 
     background-image: 
-    linear-gradient(to right, #3e4042 1px, transparent 1px),
-    linear-gradient(to bottom, #3e4042 1px, transparent 1px);
+        linear-gradient(to right, #3e4042 1px, transparent 1px),
+        linear-gradient(to bottom, #3e4042 1px, transparent 1px);
     background-size: var(--column-size) var(--column-size);
     box-shadow:  0 6px 20px 0 rgb(0 0 0 / 50%);
 }
 
 .buttonOverlay{
+    width: var(--size);
+    height: var(--size);
+
     position: absolute;
+    bottom: 0;
+    z-index: 2;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    width: var(--size);
-    height: var(--size);
-    z-index: 2;
+
     border-radius: 10px;
     border: 1px solid #da535e;
     background-color: #070707da;
+}
+
+.infoBox{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
 }
 
 .buttonContent{
