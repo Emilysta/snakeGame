@@ -1,16 +1,70 @@
-.modalShown{
-    display: block;
-    border-radius: 10px;
+.blend{
+    position: fixed;
+    top: 0;
+    left: 0;
+    
+    z-index:10;
+    background: rgba(162, 162, 162, 0.186);
+    width: 100vw;
+    height: 100vh;
+    backdrop-filter: blur(8px);
+}
+
+.modal{
+    display: none;
+
     position: absolute;
     left: 50%;
     top: 50%;
+
     transform: translate(-50%, -50%);
-    z-index: 3;
+
+    border-radius: 10px;
     background-color: white;
-    padding: 10px;
+    padding: 15px;
     color: black;
+
+    flex-direction: column;
+    row-gap: 10px;
+
+    font-size: 25px;
 }
 
-.modalHidden{
-    display: none;
+.modal.show{
+    display: flex;
 }
+
+.textInputLabel{
+    text-align: left;
+    font-size: inherit;
+}
+
+.textInput{
+    font-family: inherit;
+    outline-color: #da535e;
+    outline-width: 1px;
+    padding: 5px;
+    border: 0.5px solid;
+    border-radius: 5px;
+    font-size: inherit;
+}
+
+.submitInputButton{
+    align-self: flex-end;
+    border: 0.5px solid;
+    border-radius: 5px;
+    padding: 3px 10px;
+    font-family: inherit;
+    font-size: inherit;
+}
+
+.submitInputButton:hover{
+    background-color: #da535e;
+    color: white;
+}
+
+.submitInputButton:active{
+    background-color: #d2202e;
+    color: white;
+}
+
