@@ -71,19 +71,6 @@ export class Snake implements GameItem {
             this.position.push(new Point(lastPos.x - lastDir.moveDir.x, lastPos.y - lastDir.moveDir.y));
         }
 
-        if (this.traveledDistance >= (1 / SNAKE_STEP)) {
-            this.traveledDistance = 0;
-            this.fullTileCallback();
-            if (this.nextDirection !== null && Number.isInteger(snakeHead.x) && Number.isInteger(snakeHead.y)) {
-                this.moveDirections.unshift({ moveDir: this.nextDirection, countOfSnakeParts: 1 });
-                this.nextDirection = null;
-                this.modifyLastDirection();
-            }
-
-
-        }
-
-
         if (this.traveledDistance >= (1 / SNAKE_STEP) && this.nextDirection !== null &&
             Number.isInteger(snakeHead.x) && Number.isInteger(snakeHead.y)) {
             this.moveDirections.unshift({ moveDir: this.nextDirection, countOfSnakeParts: 1 });
