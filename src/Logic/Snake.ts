@@ -5,9 +5,6 @@ import { GameItem } from "./GameItem";
 const startSnake =
     [
         new Point(5, 7),
-        new Point(4, 7),
-        new Point(3, 7),
-        new Point(2, 7),
     ]
 
 type DirectionElemenet = {
@@ -21,21 +18,23 @@ export class Snake implements GameItem {
     position: Point[] = startSnake;
     context: CanvasRenderingContext2D;
     speed: number = 1;
-    moveDirections: DirectionElemenet[] = [{ moveDir: new Point(1, 0), countOfSnakeParts: 4 }];
+    moveDirections: DirectionElemenet[] = [{ moveDir: new Point(1, 0), countOfSnakeParts: 1 }];
     nextDirection: Point | null = null;
     traveledDistance: number = 0;
     isMakeLongerExpected: boolean = false;
     countOfEatenApples: number = 0;
+    fullTileCallback: () => void;
 
 
-    constructor(context: CanvasRenderingContext2D) {
+    constructor(context: CanvasRenderingContext2D, fullTileCallback: () => void) {
         this.context = context;
+        this.fullTileCallback = fullTileCallback;
     }
 
     makeLonger() {
         this.isMakeLongerExpected = true;
         this.countOfEatenApples += 1;
-        if (this.countOfEatenApples === 10) {
+        if (this.countOfEatenApples === 5) {
             this.countOfEatenApples = 0;
             this.makeFaster();
         }
@@ -62,7 +61,7 @@ export class Snake implements GameItem {
 
         const snakeHead = this.position[0];
         this.traveledDistance += 1;
-        console.log('lol')
+
         if (this.isMakeLongerExpected) {
             this.isMakeLongerExpected = false;
             const lastIndex = this.moveDirections.length - 1;
@@ -72,18 +71,38 @@ export class Snake implements GameItem {
             this.position.push(new Point(lastPos.x - lastDir.moveDir.x, lastPos.y - lastDir.moveDir.y));
         }
 
+        if (this.traveledDistance >= (1 / SNAKE_STEP)) {
+            this.traveledDistance = 0;
+            this.fullTileCallback();
+            if (this.nextDirection !== null && Number.isInteger(snakeHead.x) && Number.isInteger(snakeHead.y)) {
+                this.moveDirections.unshift({ moveDir: this.nextDirection, countOfSnakeParts: 1 });
+                this.nextDirection = null;
+                this.modifyLastDirection();
+            }
+
+
+        }
+
+
         if (this.traveledDistance >= (1 / SNAKE_STEP) && this.nextDirection !== null &&
             Number.isInteger(snakeHead.x) && Number.isInteger(snakeHead.y)) {
             this.moveDirections.unshift({ moveDir: this.nextDirection, countOfSnakeParts: 1 });
             this.nextDirection = null;
             this.modifyLastDirection();
             this.traveledDistance = 0;
+            this.fullTileCallback();
         }
 
         if (this.traveledDistance >= (1 / SNAKE_STEP) && this.moveDirections.length > 1) {
             this.traveledDistance = 0;
             this.moveDirections[0].countOfSnakeParts += 1;
             this.modifyLastDirection();
+            this.fullTileCallback();
+        }
+
+        if (this.traveledDistance >= (1 / SNAKE_STEP)) {
+            this.traveledDistance = 0
+            this.fullTileCallback();
         }
 
     }
