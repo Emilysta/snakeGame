@@ -34,21 +34,18 @@ export default function GameView(props: GameViewProps) {
 
     function startGame() {
         const board = document.getElementById("gameBoard");
-        board?.focus();
-        let i = 3;
-        const interval = setInterval(() => {
-            setCountdown(i);
-            i--;
-        }, 1000)
-        setTimeout(() => {
-            clearInterval(interval);
+        timeout(() => {
+            board?.focus();
             game?.startGame(true);
-            setCountdown(-1)
-        }, 3000);
+        });
     }
 
     function resetGame() {
-        setTimeout(() => game?.resetGame(), 2000);
+        const board = document.getElementById("gameBoard");
+        timeout(() => {
+            board?.focus();
+            game?.resetGame();
+        });
     }
 
     function pauseGame() {
@@ -57,7 +54,21 @@ export default function GameView(props: GameViewProps) {
     }
 
     function continueGame() {
-        setTimeout(() => game?.startGame(true), 2000);
+        timeout(() => game?.startGame(true));
+    }
+
+    function timeout(callbackFunction: () => void) {
+        let i = 3;
+        const interval = setInterval(() => {
+            setCountdown(i);
+            i--;
+        }, 1000)
+        setTimeout(() => {
+            clearInterval(interval);
+            callbackFunction();
+
+            setCountdown(-1)
+        }, 3000);
     }
 
     function gameStatusChanged(currentGameStatus: GameStatus) {
@@ -92,10 +103,14 @@ export default function GameView(props: GameViewProps) {
 
             <canvas className={styles.board} ref={canvasRef} height={BOARD_SIZE} width={BOARD_SIZE} id="gameCanvas"></canvas>
 
-            {(!gameStatus.isPlaying || gameStatus.isEnd) &&
-                <div className={styles.buttonOverlay}>
-                    {countdown !== -1 && <h1>{countdown}</h1>}
-                    {countdown === -1 && !gameStatus.isPlaying &&
+            {countdown !== -1 && <div className={styles.gameOverlay}>
+                <h1>{countdown}</h1>
+            </div>
+            }
+
+            {countdown === -1 && (!gameStatus.isPlaying || gameStatus.isEnd) &&
+                <div className={styles.gameOverlay}>
+                    {!gameStatus.isPlaying &&
                         <CustomButton value="Play" onClick={startGame} contentClassName={styles.buttonContent} icon={<PlayFill height={80} width={80} />} />
                     }
                     {gameStatus.isEnd &&
