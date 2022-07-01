@@ -67,49 +67,49 @@ export class Game {
     }
 
     resetGame() {
-        this.gameStatus.isEnd = false;
-        this.gameStatus.isPlaying = false;
-        this.gameStatus.isPaused = false;
-        this.gameStatus.score = 0;
-
-        clearInterval(this.timer);
-        this.timer = undefined;
-        this.apple.reset();
-        this.snake.reset();
-        this.bombs.reset();
-        this.context.clearRect(0, 0, 1024, 1024)
+        console.log("Reset Game invoked")
+        this.apple = new Apple(this.context, this.getFreeRandomPosition.bind(this));
+        this.bombs = new Bombs(this.context, this.getFreeRandomPosition.bind(this));
+        this.snake = new Snake(this.context, this.snakeOnFullTile.bind(this));
+        this.gameStatus = {
+            isPlaying: false,
+            isPaused: false,
+            isEnd: false,
+            score: 0,
+        }
+        this.board = [];
+        this.freeSpace = {};
+        this.context.clearRect(0, 0, 1024, 1024);
         this.startGame(true);
     }
 
     updateGameLoop() {
+        //this.checkColision();
         this.context.clearRect(0, 0, 1024, 1024);
         this.apple.update();
         this.snake.update();
         this.bombs.update();
-
-        this.checkColision();
     }
 
     endGame() {
         if (this.timer !== undefined) {
-            this.gameStatus.isEnd = true;
-            this.gameStatusChanged(this.gameStatus);
             clearInterval(this.timer);
             this.timer = undefined;
-            this.context.clearRect(0, 0, 1024, 1024);
+            this.gameStatus.isEnd = true;
+            this.gameStatusChanged(this.gameStatus);
         }
     }
 
     setupBoard() {
-        this.board = Array.from(Array(20), () => new Array(20).fill(BoardTile.Empty))
+        this.board = Array.from(new Array(20), () => new Array(20).fill(BoardTile.Empty))
 
         const apple = this.apple.position;
-        this.board[apple.x][apple.y] = BoardTile.Apple;
+        this.board[apple.y][apple.x] = BoardTile.Apple;
 
         this.snake.position.forEach(pos => {
             this.board[pos.y][pos.x] = BoardTile.Snake;
         });
-        console.log(this.board);
+
         const space: { [name: string]: Point } = {};
         for (var i = 0; i < 20; i++) {
             for (var j = 0; j < 20; j++)
@@ -123,52 +123,60 @@ export class Game {
 
     getFreeRandomPosition(type: BoardTile, previous?: Point, deletePrevious?: boolean) {
         if (deletePrevious && previous) {
-            this.board[previous.x][previous.y] = BoardTile.Empty;
+            this.board[previous.y][previous.x] = BoardTile.Empty;
             this.freeSpace[previous.toString()] = previous;
         }
         const keys = Object.keys(this.freeSpace);
         const index = RandomInt.getRandomIntOnInterval(0, keys.length - 1);
 
         const newPos = this.freeSpace[keys[index]];
-        this.board[newPos.x][newPos.y] = type;
+        this.board[newPos.y][newPos.x] = type;
         delete this.freeSpace[newPos.toString()];
         return newPos;
     }
 
     snakeOnFullTile(previous: Point) {
         const snakeHead = this.snake.position[0];
-        this.board[Math.floor(snakeHead.y)][Math.floor(snakeHead.x)] = BoardTile.Snake;
-        delete this.freeSpace[snakeHead.toString()];
-        // console.log(JSON.stringify(this.snake.position));
-        // console.log(previous);
-        this.board[previous.x][previous.y] = BoardTile.Empty;
-        // console.log(JSON.stringify(this.board));
+        if (this.checkColision(snakeHead)) {
+            return;
+        }
+        const snakeHeadFloor = new Point(Math.floor(snakeHead.x), Math.floor(snakeHead.y))
+        this.board[snakeHeadFloor.y][snakeHeadFloor.x] = BoardTile.Snake;
+        delete this.freeSpace[snakeHeadFloor.toString()];
+
+        this.board[previous.y][previous.x] = BoardTile.Empty;
+
         this.freeSpace[previous.toString()] = previous;
-        //console.log(this.board);
     }
 
-    checkColision() {
-        const snakeHead = this.snake.position[0];
-        if (this.checkCollisionWithBoardEnd()) return;
-        const boardTile = this.board[Math.floor(snakeHead.x)][Math.floor(snakeHead.y)];
+    checkColision(snakeHead: Point) {
+        if (this.checkCollisionWithBoardEnd(snakeHead))
+            return true;
+        const boardTile = this.board[Math.floor(snakeHead.y)][Math.floor(snakeHead.x)];
 
         if (boardTile !== BoardTile.Empty) {
+            console.log(boardTile);
             if (boardTile === BoardTile.Apple) {
                 console.log(boardTile)
                 this.apple.setIsChangePositionExpected(true);
                 this.gameStatus.score += 1;
                 this.gameStatusChanged(this.gameStatus);
                 this.snake.makeLonger();
+                return false;
             }
 
-            if (boardTile === (BoardTile.Bomb || BoardTile.Snake)) {
+            if (boardTile === BoardTile.Bomb || boardTile === BoardTile.Snake) {
+                console.log(JSON.stringify(this.board));
+                console.log("End")
                 this.endGame();
+                return true;
             }
         }
+        return false;
     }
 
-    checkCollisionWithBoardEnd() {
-        const snakeHead = this.snake.position[0];
+    checkCollisionWithBoardEnd(snakeHead: Point) {
+
         if (snakeHead.x < 0 || snakeHead.y < 0) {
             this.endGame();
             return true;

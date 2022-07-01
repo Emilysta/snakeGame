@@ -54,14 +54,6 @@ export class Apple implements GameItem {
         }
     }
 
-    reset() {
-        this.position = new Point(5, 5);
-        this.isChangePositionExpected = false;
-        clearInterval(this.timer);
-        this.timer = undefined;
-        console.log('resetApple');
-    }
-
     update() {
         if (this.isChangePositionExpected)
             this.changePosition();
@@ -72,7 +64,6 @@ export class Apple implements GameItem {
         if (this.timer !== undefined) {
             clearInterval(this.timer);
             this.timer = undefined;
-            this.reset();
         }
     }
 }

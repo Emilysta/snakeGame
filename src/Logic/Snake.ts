@@ -1,12 +1,6 @@
 import { MoveDirection, SNAKE_STEP, TILE_SIZE } from "Utils/GameUtils";
 import { Point } from "Utils/Point";
 import { GameItem } from "./GameItem";
-
-const startSnake =
-    [
-        new Point(5, 7),
-    ]
-
 type DirectionElemenet = {
     moveDir: Point,
     countOfSnakeParts: number,
@@ -15,7 +9,7 @@ type DirectionElemenet = {
 }
 
 export class Snake implements GameItem {
-    position: Point[] = startSnake;
+    position: Point[] = [new Point(5, 7)];
     context: CanvasRenderingContext2D;
     speed: number = 1;
     moveDirections: DirectionElemenet[] = [{ moveDir: new Point(1, 0), countOfSnakeParts: 1 }];
@@ -27,6 +21,7 @@ export class Snake implements GameItem {
 
 
     constructor(context: CanvasRenderingContext2D, fullTileCallback: (previous: Point) => void) {
+
         this.context = context;
         this.fullTileCallback = fullTileCallback;
     }
@@ -48,9 +43,6 @@ export class Snake implements GameItem {
         let startIndex = 0;
         let count = 0;
 
-        const prevRef = this.position[this.position.length - 1];
-        const previous = new Point(Math.floor(prevRef.x - 0.1), Math.floor(prevRef.y - 0.1));
-
         this.moveDirections.forEach((direction) => {
             count += direction.countOfSnakeParts;
             for (let it = startIndex; it < count; it++) {
@@ -65,13 +57,16 @@ export class Snake implements GameItem {
         const snakeHead = this.position[0];
         this.traveledDistance += 1;
 
+        const lastIndex = this.moveDirections.length - 1;
+        const lastDir = this.moveDirections[lastIndex];
+        const lastPos = this.position[count - 1];
+        const previous = new Point(lastPos.x - lastDir.moveDir.x, lastPos.y - lastDir.moveDir.y);
+
+        new Point(lastPos.x - lastDir.moveDir.x, lastPos.y - lastDir.moveDir.y)
         if (this.isMakeLongerExpected) {
             this.isMakeLongerExpected = false;
-            const lastIndex = this.moveDirections.length - 1;
-            const lastDir = this.moveDirections[lastIndex];
             lastDir.countOfSnakeParts += 1;
-            const lastPos = this.position[count - 1];
-            this.position.push(new Point(lastPos.x - lastDir.moveDir.x, lastPos.y - lastDir.moveDir.y));
+            this.position.push(previous);
         }
 
         if (this.traveledDistance >= (1 / SNAKE_STEP) && this.nextDirection !== null &&
@@ -91,6 +86,7 @@ export class Snake implements GameItem {
         }
 
         if (this.traveledDistance >= (1 / SNAKE_STEP)) {
+
             this.traveledDistance = 0
             this.fullTileCallback(previous);
         }
@@ -158,22 +154,11 @@ export class Snake implements GameItem {
     pause() {
     }
 
-    reset() {
-        this.position = startSnake;
-        this.speed = 1;
-        this.moveDirections = [{ moveDir: new Point(1, 0), countOfSnakeParts: 4 }];
-        this.nextDirection = null;
-        this.traveledDistance = 0;
-        this.isMakeLongerExpected = false;
-        this.countOfEatenApples = 0;
-    }
-
     update() {
         this.move();
         this.draw();
     }
 
     end() {
-        this.reset();
     }
 }

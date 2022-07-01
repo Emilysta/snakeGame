@@ -61,13 +61,6 @@ export class Bombs implements GameItem {
         }
     }
 
-    reset() {
-        this.positions = [];
-        this.isNewBombExpected = false;
-        clearInterval(this.timer);
-        this.timer = undefined;
-    }
-
     update() {
         this.draw();
         if (this.isNewBombExpected)
@@ -78,7 +71,6 @@ export class Bombs implements GameItem {
         if (this.timer !== undefined) {
             clearInterval(this.timer);
             this.timer = undefined;
-            this.reset();
         }
     }
 }
