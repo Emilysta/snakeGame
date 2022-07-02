@@ -30,6 +30,7 @@
 
 .board:focus{
     border: 1px solid #7ec710;
+    outline: none;
 }
 
 .gameOverlay{
