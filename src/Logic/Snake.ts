@@ -17,6 +17,7 @@ export class Snake implements GameItem {
     traveledDistance: number = 0;
     isMakeLongerExpected: boolean = false;
     countOfEatenApples: number = 0;
+    timer: NodeJS.Timer | undefined;
     fullTileCallback: (previous: Point) => void;
 
 
@@ -37,6 +38,11 @@ export class Snake implements GameItem {
 
     makeFaster() {
         this.speed *= 1.25;
+        if (this.timer !== undefined) {
+            clearInterval(this.timer);
+            this.timer = undefined;
+        }
+        this.timer = setInterval(this.move.bind(this), (1000 / 30) / this.speed);
     }
 
     move() {
@@ -148,17 +154,27 @@ export class Snake implements GameItem {
     }
 
     start() {
-        this.draw();
+        if (this.timer === undefined) {
+            this.timer = setInterval(this.move.bind(this), (1000 / 30) / this.speed);
+            this.draw();
+        }
     }
 
     pause() {
+        if (this.timer !== undefined) {
+            clearInterval(this.timer);
+            this.timer = undefined;
+        }
     }
 
     update() {
-        this.move();
         this.draw();
     }
 
     end() {
+        if (this.timer !== undefined) {
+            clearInterval(this.timer);
+            this.timer = undefined;
+        }
     }
 }

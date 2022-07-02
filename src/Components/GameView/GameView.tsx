@@ -104,7 +104,7 @@ export default function GameView(props: GameViewProps) {
 
             {(!gameStatus.isPlaying || gameStatus.isEnd || gameStatus.isPaused) &&
                 <div className={styles.gameOverlay}>
-                    {countdown === -1 && !gameStatus.isPlaying &&
+                    {countdown === -1 && !gameStatus.isPlaying && !gameStatus.isEnd &&
                         <CustomButton value="Play" onClick={startGame} contentClassName={styles.buttonContent} icon={<PlayFill height={80} width={80} />} />
                     }
                     {countdown === -1 && gameStatus.isEnd &&

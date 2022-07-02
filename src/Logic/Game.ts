@@ -95,8 +95,13 @@ export class Game {
         if (this.timer !== undefined) {
             clearInterval(this.timer);
             this.timer = undefined;
+            this.gameStatus.isPlaying = false;
+            this.gameStatus.isPaused = false;
             this.gameStatus.isEnd = true;
             this.gameStatusChanged(this.gameStatus);
+            this.apple.end();
+            this.bombs.end();
+            this.snake.end();
         }
     }
 
@@ -189,28 +194,31 @@ export class Game {
     }
 
     reactToUserInput(key: string) {
-        switch (key) {
-            case "ArrowDown": {
-                this.snake.changeMoveDirection(MoveDirection.Down);
-                break;
-            }
-            case "ArrowUp": {
-                this.snake.changeMoveDirection(MoveDirection.Up);
-                break;
-            }
-            case "ArrowLeft": {
-                this.snake.changeMoveDirection(MoveDirection.Left);
-                break;
-            }
-            case "ArrowRight": {
-                this.snake.changeMoveDirection(MoveDirection.Right);
-                break;
-            }
-            case "p": {
-                this.gameStatus.isPaused = !this.gameStatus.isPaused;
-                if (this.gameStatus.isPaused) this.startGame(true);
-                else this.pauseGame();
-                break;
+        if (this.gameStatus.isPlaying) {
+            switch (key) {
+                case "ArrowDown": {
+                    this.snake.changeMoveDirection(MoveDirection.Down);
+                    break;
+                }
+                case "ArrowUp": {
+                    this.snake.changeMoveDirection(MoveDirection.Up);
+                    break;
+                }
+                case "ArrowLeft": {
+                    this.snake.changeMoveDirection(MoveDirection.Left);
+                    break;
+                }
+                case "ArrowRight": {
+                    this.snake.changeMoveDirection(MoveDirection.Right);
+                    break;
+                }
+                case "p": {
+                    if (this.gameStatus.isPaused)
+                        this.startGame(true);
+                    else
+                        this.pauseGame();
+                    break;
+                }
             }
         }
     }
