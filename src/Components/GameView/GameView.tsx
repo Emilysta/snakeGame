@@ -33,6 +33,7 @@ export default function GameView(props: GameViewProps) {
     }, [])
 
     function startGame() {
+        setCountdown(3);
         timeout(() => {
             canvasRef.current?.focus();
             game?.startGame();
@@ -40,6 +41,7 @@ export default function GameView(props: GameViewProps) {
     }
 
     function resetGame() {
+        setCountdown(3);
         timeout(() => {
             canvasRef.current?.focus();
             game?.resetGame();
@@ -51,6 +53,7 @@ export default function GameView(props: GameViewProps) {
     }
 
     function continueGame() {
+        setCountdown(3);
         timeout(() => {
             canvasRef.current?.focus();
             game?.startGame(true);
@@ -58,7 +61,7 @@ export default function GameView(props: GameViewProps) {
     }
 
     function timeout(callbackFunction: () => void) {
-        let i = 3;
+        let i = 2;
         const interval = setInterval(() => {
             setCountdown(i);
             i--;
