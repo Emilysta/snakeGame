@@ -206,7 +206,7 @@ export class Game {
                 this.snake.changeMoveDirection(MoveDirection.Right);
                 break;
             }
-            case "Escape": {
+            case "p": {
                 this.gameStatus.isPaused = !this.gameStatus.isPaused;
                 if (this.gameStatus.isPaused) this.startGame(true);
                 else this.pauseGame();

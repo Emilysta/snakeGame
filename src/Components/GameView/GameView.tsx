@@ -102,19 +102,23 @@ export default function GameView(props: GameViewProps) {
 
             <canvas className={styles.board} ref={canvasRef} height={BOARD_SIZE} width={BOARD_SIZE} id="gameCanvas" onKeyDown={onBoardKeyDown} tabIndex={0} />
 
-            {(countdown !== -1 || gameStatus.isPaused) && <div className={styles.gameOverlay}>
-                <h1>{countdown}</h1>
-            </div>
-            }
-
-            {countdown === -1 && (!gameStatus.isPlaying || gameStatus.isEnd) &&
+            {(!gameStatus.isPlaying || gameStatus.isEnd || gameStatus.isPaused) &&
                 <div className={styles.gameOverlay}>
-                    {!gameStatus.isPlaying &&
+                    {countdown === -1 && !gameStatus.isPlaying &&
                         <CustomButton value="Play" onClick={startGame} contentClassName={styles.buttonContent} icon={<PlayFill height={80} width={80} />} />
                     }
-                    {gameStatus.isEnd &&
+                    {countdown === -1 && gameStatus.isEnd &&
                         <CustomButton value="Restart game" onClick={resetGame} contentClassName={styles.buttonContent} icon={<PlayFill height={80} width={80} />} />
                     }
+                    {countdown !== -1 &&
+                        <h1>Game will start in <br />
+                            {countdown !== -1 ? countdown : '...'}
+                        </h1>
+                    }
+                    {countdown === -1 && gameStatus.isPaused &&
+                        <h1>Game paused </h1>
+                    }
+
                 </div>
             }
             <InputModal isShown={showModal} onSubmit={submitScore} />
