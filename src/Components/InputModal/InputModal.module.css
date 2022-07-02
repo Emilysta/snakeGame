@@ -1,37 +1,20 @@
-.blend{
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    
-    z-index:10;
-    background: rgba(162, 162, 162, 0.186);
-    width: 100vw;
-    height: 100vh;
-    backdrop-filter: blur(8px);
-}
-
-.blend.show{
-    display: block;
-}
-
 .modal{
-    position: absolute;
-    left: 50%;
-    top: 50%;
-
-    transform: translate(-50%, -50%);
-
     border-radius: 10px;
     background-color: white;
     padding: 15px;
     color: black;
 
+    font-size: 25px;
+}
+
+.modal::backdrop{
+    backdrop-filter: blur(4px);
+}
+
+.form{
     display: flex;
     flex-direction: column;
     row-gap: 10px;
-
-    font-size: 25px;
 }
 
 .textInputLabel{

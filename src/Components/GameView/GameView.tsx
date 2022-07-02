@@ -83,6 +83,7 @@ export default function GameView(props: GameViewProps) {
     }
 
     function onBoardKeyDown(e: React.KeyboardEvent<HTMLCanvasElement>) {
+        e.preventDefault();
         game?.reactToUserInput(e.key);
     }
 

@@ -38,15 +38,13 @@
     height: var(--size);
 
     position: absolute;
-    bottom: 0;
-    z-index: 2;
+    bottom:1px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
     border-radius: 10px;
-    border: 1px solid #da535e;
     background-color: #070707da;
 }
 
