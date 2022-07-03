@@ -6,6 +6,7 @@ import styles from './GameView.module.css';
 import { PlayFill, PauseFill } from 'react-bootstrap-icons';
 import Score from 'Components/Score/Score';
 import InputModal from 'Components/InputModal/InputModal';
+import { addPlayerScoreToLeaderboard } from 'Utils/GlobalLeaderboardApi';
 
 type GameViewProps = {
     gameEndedCallback?: (playerName: string, score: number) => void,
@@ -79,10 +80,11 @@ export default function GameView(props: GameViewProps) {
             setShowModal(true);
     }
 
-    function submitScore(inputValue: string) {
+    async function submitScore(inputValue: string) {
         setShowModal(false);
         if (props.gameEndedCallback)
             props.gameEndedCallback(inputValue, gameStatus.score);
+        const response = await addPlayerScoreToLeaderboard(inputValue, gameStatus.score);
     }
 
     function onBoardKeyDown(e: React.KeyboardEvent<HTMLCanvasElement>) {

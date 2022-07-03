@@ -1,5 +1,7 @@
+import { PlayerScore } from "Utils/GlobalLeaderboardApi";
+
 export class Leaderboard {
-    snakeGameLeaderboad: LeaderboardPlace[] = [];
+    snakeGameLeaderboad: PlayerScore[] = [];
     constructor() {
         this.loadLeaderboard();
     }
@@ -26,17 +28,12 @@ export class Leaderboard {
     }
 
     addScoreToLeaderboard(newPlayerName: string, newScore: number) {
-        this.snakeGameLeaderboad.push({ playerName: newPlayerName, score: newScore })
-        const tempLeaderboard = this.snakeGameLeaderboad.sort((place1, place2) => place2.score - place1.score);
+        this.snakeGameLeaderboad.push({ playerName: newPlayerName, playerScore: newScore })
+        const tempLeaderboard = this.snakeGameLeaderboad.sort((place1, place2) => place2.playerScore - place1.playerScore);
         if (tempLeaderboard.length > 10)
             this.snakeGameLeaderboad = tempLeaderboard.slice(0, 10);
         else
             this.snakeGameLeaderboad = tempLeaderboard;
         this.saveLeaderboard();
     }
-}
-
-export type LeaderboardPlace = {
-    playerName: string,
-    score: number,
 }
