@@ -1,5 +1,5 @@
 export async function getLeaderboard(page: number) {
-    const response = await fetch(`scores/${page}`);
+    const response = await fetch(`https://snake.toadres.pl/api/scores/${page}`, { mode: "no-cors" });
     if (response.status === 400)
         return null;
     try {
@@ -14,9 +14,10 @@ export async function getLeaderboard(page: number) {
 export async function addPlayerScoreToLeaderboard(playerName: string, playerScore: number) {
     const playerResult: PlayerScore = { playerName: playerName, playerScore: playerScore };
 
-    const response = await fetch("score",
+    const response = await fetch("https://snake.toadres.pl/api/score",
         {
             method: "POST",
+            mode: "no-cors",
             body: JSON.stringify(playerResult),
             headers: {
                 'Content-type': 'application/json; charset=UTF-8'
