@@ -47,9 +47,9 @@ export class Game {
             if (!isAsContinue) {
                 this.setupBoard();
             }
-            this.apple.start();
-            this.snake.start();
-            this.bombs.start();
+            this.apple.draw();
+            this.snake.draw();
+            this.bombs.draw();
             this.timer = setInterval(this.updateGameLoop.bind(this), 1000 / 60);
         }
     }
@@ -58,9 +58,6 @@ export class Game {
         if (this.timer !== undefined) {
             this.gameStatus.isPaused = true;
             this.gameStatusChanged(this.gameStatus);
-            this.apple.pause();
-            this.snake.pause();
-            this.bombs.pause();
             clearInterval(this.timer);
             this.timer = undefined;
         }
@@ -84,7 +81,6 @@ export class Game {
     }
 
     updateGameLoop() {
-        //this.checkColision();
         this.context.clearRect(0, 0, 1024, 1024);
         this.apple.update();
         this.snake.update();
@@ -99,9 +95,6 @@ export class Game {
             this.gameStatus.isPaused = false;
             this.gameStatus.isEnd = true;
             this.gameStatusChanged(this.gameStatus);
-            this.apple.end();
-            this.bombs.end();
-            this.snake.end();
         }
     }
 
@@ -142,9 +135,8 @@ export class Game {
 
     snakeOnFullTile(previous: Point) {
         const snakeHead = this.snake.position[0];
-        if (this.checkColision(snakeHead)) {
+        if (this.checkColision(snakeHead))
             return;
-        }
         const snakeHeadFloor = new Point(Math.floor(snakeHead.x), Math.floor(snakeHead.y))
         this.board[snakeHeadFloor.y][snakeHeadFloor.x] = BoardTile.Snake;
         delete this.freeSpace[snakeHeadFloor.toString()];
@@ -155,24 +147,23 @@ export class Game {
     }
 
     checkColision(snakeHead: Point) {
-        if (this.checkCollisionWithBoardEnd(snakeHead))
+        if (this.checkCollisionWithBoardEnd(snakeHead) || this.checkCollisionWithSelf(snakeHead)) {
+            this.endGame();
             return true;
+        }
         const boardTile = this.board[Math.floor(snakeHead.y)][Math.floor(snakeHead.x)];
 
-        if (boardTile !== BoardTile.Empty) {
+        if (boardTile !== BoardTile.Empty && boardTile !== BoardTile.Snake) {
             console.log(boardTile);
             if (boardTile === BoardTile.Apple) {
-                console.log(boardTile)
-                this.apple.setIsChangePositionExpected(true);
+                this.apple.setIsChangePositionExpected();
                 this.gameStatus.score += 1;
                 this.gameStatusChanged(this.gameStatus);
                 this.snake.makeLonger();
                 return false;
             }
-
-            if (boardTile === BoardTile.Bomb || boardTile === BoardTile.Snake) {
+            if (boardTile === BoardTile.Bomb) {
                 console.log(JSON.stringify(this.board));
-                console.log("End")
                 this.endGame();
                 return true;
             }
@@ -183,14 +174,29 @@ export class Game {
     checkCollisionWithBoardEnd(snakeHead: Point) {
 
         if (snakeHead.x < 0 || snakeHead.y < 0) {
-            this.endGame();
             return true;
         }
         if (snakeHead.x > 19 || snakeHead.y > 19) {
-            this.endGame();
             return true;
         }
         return false;
+    }
+
+    checkCollisionWithSelf(snakeHead: Point) {
+        const snakeTail = this.snake.position.slice(2);
+        return !snakeTail.every(snakeElement => {
+            if (this.checkTwoPointsCollision(snakeHead, snakeElement))
+                return false;
+            return true
+        });
+    }
+
+    checkTwoPointsCollision(point1: Point, point2: Point) {
+        if (point1.x !== point2.x)
+            return false;
+        if (point1.y !== point2.y)
+            return false;
+        return true;
     }
 
     reactToUserInput(key: string) {

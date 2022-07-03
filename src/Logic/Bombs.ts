@@ -5,8 +5,7 @@ import { GameItem } from "./GameItem";
 export class Bombs implements GameItem {
     positions: Point[] = [];
     context: CanvasRenderingContext2D;
-    timer: NodeJS.Timer | undefined;
-    isNewBombExpected: boolean = false;
+    elapsedTime: number = 0;
     randomPoisitionNeededCallback: (type: BoardTile, previous?: Point, deletePreviou?: boolean) => Point;
 
     constructor(context: CanvasRenderingContext2D, randomPoisitionNeededCallback: (type: BoardTile, previous?: Point, deletePreviou?: boolean) => Point) {
@@ -14,15 +13,10 @@ export class Bombs implements GameItem {
         this.randomPoisitionNeededCallback = randomPoisitionNeededCallback;
     }
 
-    setIsNewBombExpected() {
-        this.isNewBombExpected = true;
-    }
-
     addNewBomb() {
         const newBomb = this.randomPoisitionNeededCallback(BoardTile.Bomb);
         this.positions.push(newBomb);
         this.drawNewBomb(newBomb);
-        this.isNewBombExpected = false;
     }
 
     draw() {
@@ -47,30 +41,13 @@ export class Bombs implements GameItem {
         this.context.closePath();
     }
 
-    start() {
-        if (this.timer === undefined) {
-            this.timer = setInterval(this.setIsNewBombExpected.bind(this), 30 * 1000);
-            this.draw();
-        }
-    }
-
-    pause() {
-        if (this.timer !== undefined) {
-            clearInterval(this.timer);
-            this.timer = undefined;
-        }
-    }
-
     update() {
-        this.draw();
-        if (this.isNewBombExpected)
-            this.addNewBomb();
-    }
+        this.elapsedTime += 1.00 / 60;
 
-    end() {
-        if (this.timer !== undefined) {
-            clearInterval(this.timer);
-            this.timer = undefined;
+        if (this.elapsedTime >= 30.00) {
+            this.elapsedTime = 0;
+            this.addNewBomb();
         }
+        this.draw();
     }
 }

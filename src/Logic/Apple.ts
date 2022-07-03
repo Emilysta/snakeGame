@@ -6,7 +6,7 @@ export class Apple implements GameItem {
     position: Point = new Point(5, 5);
     context: CanvasRenderingContext2D;
     isChangePositionExpected: boolean = false;
-    timer: NodeJS.Timer | undefined;
+    elapsedTime: number = 0;
     randomPoisitionNeededCallback: (type: BoardTile, previous?: Point, deletePreviou?: boolean) => Point;
 
     constructor(context: CanvasRenderingContext2D, randomPoisitionNeededCallback: (type: BoardTile, previous?: Point, deletePreviou?: boolean) => Point) {
@@ -14,12 +14,8 @@ export class Apple implements GameItem {
         this.randomPoisitionNeededCallback = randomPoisitionNeededCallback;
     }
 
-    setIsChangePositionExpected(resetTimer?: boolean) {
+    setIsChangePositionExpected() {
         this.isChangePositionExpected = true;
-        if (resetTimer) {
-            clearInterval(this.timer);
-            this.timer = setInterval(this.setIsChangePositionExpected.bind(this), 10 * 1000);
-        }
     }
 
     changePosition() {
@@ -39,31 +35,12 @@ export class Apple implements GameItem {
         this.context.closePath()
     }
 
-
-    start() {
-        if (this.timer === undefined) {
-            this.timer = setInterval(this.setIsChangePositionExpected.bind(this), 10 * 1000);
-            this.draw();
-        }
-    }
-
-    pause() {
-        if (this.timer !== undefined) {
-            clearInterval(this.timer);
-            this.timer = undefined;
-        }
-    }
-
     update() {
-        if (this.isChangePositionExpected)
+        this.elapsedTime += 1.00/60;
+        if (this.isChangePositionExpected || this.elapsedTime >= 10.00){
             this.changePosition();
-        this.draw();
-    }
-
-    end() {
-        if (this.timer !== undefined) {
-            clearInterval(this.timer);
-            this.timer = undefined;
+            this.elapsedTime = 0;
         }
+        this.draw();
     }
 }
