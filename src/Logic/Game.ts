@@ -64,7 +64,6 @@ export class Game {
     }
 
     resetGame() {
-        console.log("Reset Game invoked")
         this.apple = new Apple(this.context, this.getFreeRandomPosition.bind(this));
         this.bombs = new Bombs(this.context, this.getFreeRandomPosition.bind(this));
         this.snake = new Snake(this.context, this.snakeOnFullTile.bind(this));
@@ -154,7 +153,6 @@ export class Game {
         const boardTile = this.board[Math.floor(snakeHead.y)][Math.floor(snakeHead.x)];
 
         if (boardTile !== BoardTile.Empty && boardTile !== BoardTile.Snake) {
-            console.log(boardTile);
             if (boardTile === BoardTile.Apple) {
                 this.apple.setIsChangePositionExpected();
                 this.gameStatus.score += 1;
@@ -163,7 +161,6 @@ export class Game {
                 return false;
             }
             if (boardTile === BoardTile.Bomb) {
-                console.log(JSON.stringify(this.board));
                 this.endGame();
                 return true;
             }
