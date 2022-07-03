@@ -4,6 +4,7 @@ import { getLeaderboard, LeaderboardContent, PlayerScore } from "Utils/GlobalLea
 import styles from './LeaderboardView.module.css';
 import ScoreRow from "./ScoreRow/SocreRow";
 import { ChevronLeft, ChevronRight } from 'react-bootstrap-icons';
+import ToggleGroup from "Components/ToggleGroup/ToggleGroup";
 
 type LeaderboardViewProps = {
     leaderboard: PlayerScore[];
@@ -33,9 +34,9 @@ export default function LeaderboardView(props: LeaderboardViewProps) {
             console.log("Problem with getting data")
     }
 
-    async function changeIsGlobal(isGlobal: boolean) {
-        setIsGlobal(isGlobal);
-        if (isGlobal) {
+    async function changeIsGlobal(value: string) {
+        setIsGlobal(!isGlobal);
+        if (value === "Global leaderboard") {
             await fetchAndSetData(1);
         }
         else {
@@ -47,14 +48,11 @@ export default function LeaderboardView(props: LeaderboardViewProps) {
         }
     }
 
-
-    console.log(data);
     return (
         <div className={styles.leaderboardViewBox}>
             <div>
                 <h2>Leaderboard View</h2>
-                <CustomButton value="Global leaderboard" onClick={() => changeIsGlobal(true)} />
-                <CustomButton value="Local leaderboard" onClick={() => changeIsGlobal(false)} />
+                <ToggleGroup buttonsList={["Local leaderboard", "Global leaderboard"]} groupName="leaderboard" onSelectionChange={changeIsGlobal} />
                 <div className={styles.scoreLabel}>
                     <p>No.</p>
                     <p>Player name</p>

@@ -8,7 +8,6 @@ type ScoreRowProps = {
 }
 
 export default function ScoreRow(props: ScoreRowProps) {
-    console.log(props.placeStats.playerScore)
     return (
         <div className={styles.scoreRow}>
             <p>{props.placeNumber}.</p>

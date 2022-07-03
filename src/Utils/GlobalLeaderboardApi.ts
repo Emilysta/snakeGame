@@ -3,9 +3,7 @@ export async function getLeaderboard(page: number) {
     if (response.status === 400)
         return null;
     try {
-        console.log(response);
         const resJson = await response.json() as LeaderboardContent;
-        console.log(resJson);
         return resJson;
     } catch (err) {
         console.log(err)
@@ -16,7 +14,14 @@ export async function getLeaderboard(page: number) {
 export async function addPlayerScoreToLeaderboard(playerName: string, playerScore: number) {
     const playerResult: PlayerScore = { playerName: playerName, playerScore: playerScore };
 
-    const response = await fetch("score", { method: "POST", body: JSON.stringify(playerResult) })
+    const response = await fetch("score",
+        {
+            method: "POST",
+            body: JSON.stringify(playerResult),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        })
     return response.ok;
 }
 

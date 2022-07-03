@@ -1,12 +1,11 @@
 .scoreRow{
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
-
 }
 .scoreRow p{
     padding: 0;
     margin: 0;
+    flex:1;
 }
 
 .score{
